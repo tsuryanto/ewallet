@@ -1,0 +1,40 @@
+CREATE TABLE `users` (
+  `user_id` char(36) NOT NULL,
+  `first_name` varchar(255) NOT NULL,
+  `last_name` varchar(255) NOT NULL,
+  `phone_number` varchar(15) NOT NULL,
+  `address` text,
+  `pin` varchar(255) NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `deleted_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`user_id`),
+  UNIQUE KEY `uni_users_phone_number` (`phone_number`)
+);
+
+CREATE TABLE user_balances (
+    id CHAR(36) PRIMARY KEY,
+    user_id CHAR(36) NOT NULL,
+    balance INT DEFAULT 0,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+);
+
+CREATE TABLE top_up_transactions (
+    top_up_id CHAR(36) PRIMARY KEY,
+    balance_id CHAR(36) NOT NULL,
+    amount INT NOT NULL,
+    balance_before INT NOT NULL,
+    balance_after INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (balance_id) REFERENCES user_balances(id) ON DELETE CASCADE
+);
+
+INSERT INTO users (user_id,first_name,last_name,phone_number,address,pin,created_at,deleted_at,updated_at) VALUES
+	 ('b5218ba2-821c-4012-972c-4636b1e7df26','Guntur','Saputro','0811255501','Jl. Kebon Sirih No. 1','123456','2024-11-24 23:48:42',NULL,'2024-11-24 16:48:41');
+
+INSERT INTO top_up_transactions (top_up_id,balance_id,amount,balance_before,balance_after,created_at) VALUES
+	 ('67bf1da3-0238-4e91-b107-30989a232a6a','53051abe-70ca-4b0c-8e52-4ceeb31fb691',500000,0,500000,'2024-11-24 23:48:52');
+
+INSERT INTO user_balances (id,user_id,balance,updated_at) VALUES
+	 ('53051abe-70ca-4b0c-8e52-4ceeb31fb691','b5218ba2-821c-4012-972c-4636b1e7df26',500000,'2024-11-24 23:48:52');
